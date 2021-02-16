@@ -1,0 +1,32 @@
+.signup-preferences-container {
+  margin: 2rem auto 1rem auto;
+  position: relative;
+  width: 60%;
+}
+.signup-preferences-map-input-container {
+  position: absolute;
+  z-index: 2;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  width: 380px;
+  justify-content: space-around;
+}
+
+.signup-preferences-container .MuiBadge-badge {
+  font-family: rajdhani;
+}
+
+.signup-preferences-container .MuiLink-button {
+  font-size: 16px;
+  margin-top: 10px;
+}
+.signup-preferences-container .MuiSvgIcon-root {
+  font-size: 1.3rem;
+}
+.signup-preferences-rightIcons {
+  display: flex;
+}

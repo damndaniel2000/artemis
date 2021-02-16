@@ -1,0 +1,20 @@
+.ambulance-type-dialog .MuiDialog-paperWidthSm {
+  width: 50vw;
+  max-width: none;
+}
+.ambulance-type-container {
+  padding: 2rem 3rem;
+  display: flex;
+  justify-content: space-around;
+}
+.ambulance-type-img {
+  width: 150px;
+}
+.ambulance-type {
+  font-size: 18px;
+  font-weight: 600;
+}
+.ambulance-type-highlight {
+  font-size: 20px;
+  color: #ff0800;
+}

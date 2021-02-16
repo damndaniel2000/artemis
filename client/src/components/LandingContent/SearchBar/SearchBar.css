@@ -1,0 +1,7 @@
+.searchbar-container .MuiInputBase-input {
+  text-align: center;
+}
+
+.searchbar-container :focus::placeholder {
+  color: transparent;
+}

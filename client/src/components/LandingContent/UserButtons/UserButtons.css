@@ -1,0 +1,14 @@
+.user-buttons-container {
+  width: 1000px;
+  display: flex;
+  justify-content: space-around;
+}
+.user-buttons-container button {
+  font-size: 35px;
+  width: 260px;
+  padding: 20px 40px;
+  color: #fff;
+  border-radius: 50px;
+  margin-top: 1rem;
+  font-weight: 700;
+}

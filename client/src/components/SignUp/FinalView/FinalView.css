@@ -1,0 +1,29 @@
+.final-view p {
+  width: 100px;
+  margin-top: 5px;
+  white-space: nowrap;
+}
+.final-view label {
+  font-weight: bold;
+  color: #ff0800;
+  font-size: 18px;
+}
+.final-view h2 {
+  color: ;
+}
+.final-view form {
+  margin-top: 1rem;
+}
+
+.finalView-preferences {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.finalView-preferences-imgs {
+  display: flex;
+  justify-content: flex-start;
+}
+.finalView-preferences-imgs img {
+  margin-right: 5rem;
+}

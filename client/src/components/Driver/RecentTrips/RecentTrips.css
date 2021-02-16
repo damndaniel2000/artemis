@@ -1,0 +1,16 @@
+.recenttrips-card {
+  width: 450px;
+  margin-bottom: 1rem;
+}
+.recenttrips-content {
+  text-align: left;
+  font-family: zilla slab;
+}
+.recenttrips-content p {
+  margin: 0;
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+.recenttrips-content .MuiRating-root {
+  font-size: 1rem;
+}

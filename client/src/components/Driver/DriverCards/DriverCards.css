@@ -1,0 +1,15 @@
+.driver-staff-cards {
+  width: 70%;
+  display: flex;
+  margin: 1rem auto;
+}
+.driver-staff-card-content {
+  text-align: left;
+}
+.driver-staff-card-title {
+  font-size: 19px;
+  margin: 0;
+}
+.driver-staff-card-content p {
+  font-size: 14px;
+}

@@ -1,0 +1,18 @@
+.login-container {
+  background-color: #fff;
+  width: 750px;
+  padding: 2rem 0 3rem 0;
+}
+
+.login-container p {
+  font-weight: 600;
+  color: #ff0800;
+  font-size: 55px;
+  margin-bottom: 2.5rem;
+}
+.login-container button {
+  padding: 0px 45px;
+  margin-top: 1rem;
+  margin-bottom: 2.5rem;
+  font-size: 20px;
+}

@@ -1,0 +1,54 @@
+.phone-input {
+  margin-top: 1rem;
+  border: none;
+  border-bottom: solid 5px #dc0005;
+  background-color: inherit;
+  padding: 10px 70px 10px 100px;
+  color: #fff;
+  font-size: 50px;
+  text-align: center;
+}
+
+.phone-input:focus::placeholder {
+  color: transparent;
+}
+
+.otp-verification-container {
+  background-color: #fff;
+  width: 800px;
+  padding: 1px 0 3rem 0;
+}
+
+.otp-verification-sent {
+  line-height: 30px;
+  width: 49%;
+  margin: 0rem auto 3rem auto;
+}
+.otp-verification {
+  display: flex;
+  justify-content: space-around;
+  width: 50%;
+  margin: 0 auto 3rem auto;
+}
+.otp-verification input {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border-radius: 50%;
+  border: solid 2px rgb(219, 219, 219);
+  caret-color: transparent;
+  background-color: rgb(219, 219, 219);
+  color: #fff;
+  font-family: rajdhani;
+  font-weight: 600;
+  font-size: 30px;
+}
+.otp-verification input:not(:placeholder-shown) {
+  background-color: #dc0005;
+  border: solid 2px #dc0005;
+}
+.otp-verification-container button {
+  padding: 0px 45px;
+  margin-top: 1rem;
+  font-size: 20px;
+}

@@ -1,0 +1,50 @@
+.medical {
+  margin: 2rem auto 2rem auto;
+  width: 70%;
+  display: grid;
+  text-align: left;
+  grid-template-columns: 2fr 5fr;
+  grid-column-gap: 2rem;
+  grid-row-gap: 4rem;
+}
+.medical-field {
+  width: 250px;
+}
+.medical-field-name {
+  text-align: right;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.medical-field-container {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+.medical-field-container > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.medical-field-container span {
+  margin-top: 10px;
+  font-size: 23px;
+}
+
+.medical-field-add-form {
+  display: flex;
+  justify-content: space-between;
+}
+.medical-field-add-form-input-container {
+  margin-top: 10px;
+  width: 250px;
+}
+
+.signup-navButtons-container {
+  width: 15%;
+  margin: 0 auto;
+  margin-bottom: 5rem;
+  display: flex;
+  justify-content: space-around;
+}

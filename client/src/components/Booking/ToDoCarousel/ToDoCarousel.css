@@ -1,0 +1,27 @@
+.todo-carousel-container {
+  margin-top: 2rem;
+}
+.todo-carousel-img {
+  width: 100px;
+}
+.todo-carousel-text {
+  width: 60%;
+  font-weight: bold;
+  margin: 1rem auto;
+}
+
+.todo-carousel-container .MuiSvgIcon-root {
+  font-size: 2rem;
+}
+
+.todo-carousel-container .Carousel-button-10 {
+  background: none;
+  color: black;
+}
+.todo-carousel-container .Carousel-button-10:hover {
+  color: black;
+}
+
+.todo-carousel-container .Carousel-buttonWrapper-8:hover .Carousel-button-10 {
+  background: none;
+}
