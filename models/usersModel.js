@@ -42,7 +42,15 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  phoneNo: {
+    type: String,
+    required: true,
+  },
   aadharNo: {
+    type: String,
+    required: true,
+  },
+  password: {
     type: String,
     required: true,
   },

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 
 import "./SignUp.css";
 
@@ -9,6 +11,11 @@ import Final from "./FinalView/FinalView";
 
 const SignUp = () => {
   const [step, setStep] = useState(0);
+  const [notification, setNotification] = useState({
+    show: false,
+  });
+
+  const handleNotificationClose = () => setNotification({ show: false });
 
   React.useEffect(() => window.scrollTo(0, 0), [step]);
   return (
@@ -46,10 +53,29 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-      {step === 0 && <Personal setStep={setStep} />}
+      {step === 0 && (
+        <Personal setStep={setStep} setNotification={setNotification} />
+      )}
       {step === 1 && <Medical setStep={setStep} />}
-      {step === 2 && <Preferences setStep={setStep} />}
+      {step === 2 && (
+        <Preferences setStep={setStep} setNotification={setNotification} />
+      )}
       {step === 3 && <Final setStep={setStep} />}
+
+      <Snackbar
+        open={notification.show}
+        autoHideDuration={5000}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleNotificationClose}
+          severity={notification.severity}
+          variant="filled"
+        >
+          {notification.text}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

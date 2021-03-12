@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, shallowEqual, useDispatch } from "react-redux";
 import { Button, makeStyles } from "@material-ui/core";
-import { makeAccount } from "../../../state/actions/signup";
 
 import "./FinalView.css";
+
+import PasswordDialog from "./PasswordDialog/PasswordDialog";
 
 const useStyles = makeStyles((theme) => ({
   navButtons: {
@@ -17,12 +18,12 @@ const FinalView = ({ setStep }) => {
 
   const data = useSelector((state) => state.signupReducer, shallowEqual);
 
+  const [passwordDialog, showPasswordDialog] = useState(false);
+
   const showMedicalRecords =
     data.allergies.length > 0 &&
     data.conditions.length > 0 &&
     data.medications.length > 0;
-
-  console.log(data);
 
   return (
     <div className="final-view">
@@ -81,6 +82,11 @@ const FinalView = ({ setStep }) => {
             </div>
           </div>
           <div className="signup-form-row">
+            <div>
+              <label>Phone Number</label>
+              <br />
+              <p>{data.phoneNo}</p>
+            </div>
             <div>
               <label>Email Address</label>
               <br />
@@ -211,11 +217,12 @@ const FinalView = ({ setStep }) => {
           color="primary"
           variant="contained"
           className={classes.navButtons}
-          onClick={() => dispatch(makeAccount())}
+          onClick={() => showPasswordDialog(true)}
         >
-          FINISH
+          CONFIRM
         </Button>
       </div>
+      <PasswordDialog open={passwordDialog} setOpen={showPasswordDialog} />
     </div>
   );
 };

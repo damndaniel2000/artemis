@@ -8,7 +8,7 @@ import "./AmbulanceTypes.css";
 import alsImg from "../../../assets/booking/als.svg";
 import blsImg from "../../../assets/booking/bls.png";
 
-const Types = ({ showDialog, setDialog }) => {
+const Types = ({ showDialog, setDialog, setAmbulanceType }) => {
   return (
     <Dialog
       open={showDialog}
@@ -35,13 +35,20 @@ const Types = ({ showDialog, setDialog }) => {
             <p> ICU on wheels </p>
             <p> Cardiac Arrests, Heart Attacks </p>
             <p> Serious Accidents, Strokes </p>
-            <Button color="primary" variant="contained">
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                setAmbulanceType("als");
+                setDialog(false);
+              }}
+            >
               Select
             </Button>
           </div>
         </div>
         <div>
-          <img src={blsImg} alt="als" className="ambulance-type-img" />
+          <img src={blsImg} alt="bls" className="ambulance-type-img" />
           <div>
             <p className="ambulance-type"> Basic Life Support (BLS) </p>
             <h3 className="ambulance-type-highlight">
@@ -51,7 +58,14 @@ const Types = ({ showDialog, setDialog }) => {
             <p> Transport to Hospital </p>
             <p> High Fevers, Bed Ridden Patients</p>
             <p> Minor Accidents (Patient is conscious) </p>
-            <Button color="primary" variant="contained">
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => {
+                setAmbulanceType("bls");
+                setDialog(false);
+              }}
+            >
               Select
             </Button>
           </div>

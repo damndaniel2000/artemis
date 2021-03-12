@@ -8,7 +8,21 @@ import {
   StandaloneSearchBox,
 } from "@react-google-maps/api";
 import Geocode from "react-geocode";
-import { Input, Button, Select, MenuItem, makeStyles } from "@material-ui/core";
+import {
+  Input,
+  Button,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  CircularProgress,
+  makeStyles,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+} from "@material-ui/core";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import io from "socket.io-client";
 
@@ -21,6 +35,8 @@ import TravelMarkers from "./TravelMarkers/TravelMarkers";
 import AmbulanceTypes from "./AmbulanceTypes/AmbulanceTypes";
 import AmbulanceDetails from "./AmbulanceDetails/AmbulanceDetails";
 import ToDoCarousel from "./ToDoCarousel/ToDoCarousel";
+
+import RoomIcon from "@material-ui/icons/Room";
 
 const socket = io.connect("/");
 
@@ -35,6 +51,14 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 0.5,
     fontWeight: 600,
   },
+  savedLocations: {
+    background: theme.palette.common.red1,
+    color: "white",
+    width: 500,
+    height: 200,
+    overflowY: "auto",
+    marginBottom: "1rem",
+  },
 }));
 
 const Booking = (props) => {
@@ -42,10 +66,12 @@ const Booking = (props) => {
   const classes = useStyles();
 
   const places = useSelector((state) => state.bookingReducer, shallowEqual);
-  const liveAmbulances = useSelector(
-    (state) => state.bookingReducer.positionsArray,
+  const userData = useSelector(
+    (state) => state.userReducer.userData,
     shallowEqual
   );
+
+  console.log(userData);
 
   const [center, setCenter] = useState({
     lat: places.ogLat,
@@ -65,10 +91,24 @@ const Booking = (props) => {
   const [matrix, runMatrix] = useState(false);
   //eslint-disable-next-line
   const [travelTime, setTime] = useState();
-  const [type, setType] = useState();
+  const [ambulanceType, setAmbulanceType] = useState("");
   const [buttonText, setButtonText] = useState("Check Distance");
 
   const [ambulanceTypeDialog, setAmbulanceTypeDialog] = useState(false);
+
+  const [originMarker, setOriginMarker] = useState({
+    show: true,
+    coords: center,
+  });
+  const [destinationMarker, setDestinationMarker] = useState({
+    show: false,
+  });
+
+  const [ogLoader, setOgLoader] = useState(false);
+  const [desLoader, setDesLoader] = useState(false);
+
+  const [showSavedOg, setSavedOg] = useState(false);
+  const [showSavedDes, setSavedDes] = useState(false);
 
   const mapRef = useRef();
   const originRef = useRef();
@@ -106,6 +146,37 @@ const Booking = (props) => {
     runMatrix(true);
   };
 
+  const convertAutocomplete = (e, type) => {
+    Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
+    console.log(e);
+    Geocode.fromAddress(e)
+      .then((response) => {
+        const { lat, lng } = response.results[0].geometry.location;
+        setCenter({ lat, lng });
+
+        if (type === "origin") {
+          setOgLoader(false);
+          setOriginMarker({
+            ...originMarker,
+            coords: {
+              lat: lat,
+              lng: lng,
+            },
+          });
+        } else {
+          setDesLoader(false);
+          setDestinationMarker({
+            ...destinationMarker,
+            coords: {
+              lat: lat,
+              lng: lng,
+            },
+          });
+        }
+      })
+      .catch();
+  };
+
   const setValues = () => {
     if (originRef.current.value !== "" && destinationRef.current.value !== "") {
       setOg(originRef.current.value);
@@ -122,6 +193,13 @@ const Booking = (props) => {
   const directionsCallback = (res) => {
     if (res !== null && origin !== "") setDirResponse(res);
   };
+  useEffect(() => {
+    if (dirResponse !== null) {
+      setDestinationMarker({ ...destinationMarker, show: true });
+      setOriginMarker({ ...originMarker, show: true });
+    }
+  }, [dirResponse]);
+
   const distanceMatrixCallback = (res) => {
     runMatrix(false);
     const totalTime = res.rows[0].elements[0].distance.text;
@@ -149,54 +227,157 @@ const Booking = (props) => {
       desLat: desCoords.lat,
       desLng: desCoords.lng,
     };
-    socket.emit("ambulance_request", { type, id: socket.id, userData });
+    socket.emit("ambulance_request", {
+      ambulanceType,
+      id: socket.id,
+      userData,
+    });
   };
-
-  let iconMarker = new window.google.maps.MarkerImage(
-    "https://lh3.googleusercontent.com/bECXZ2YW3j0yIEBVo92ECVqlnlbX9ldYNGrCe0Kr4VGPq-vJ9Xncwvl16uvosukVXPfV=w300",
-    null /* size is determined at runtime */,
-    null /* origin is 0,0 */,
-    null /* anchor is bottom center of the scaled image */,
-    new window.google.maps.Size(32, 32)
-  );
 
   return (
     <div className="booking-container">
       <div className="booking-form-container">
         <div className="booking-input-container">
-          <StandaloneSearchBox>
+          <StandaloneSearchBox
+            onPlacesChanged={() => {
+              setOgLoader(true);
+              convertAutocomplete(originRef.current.value, "origin");
+            }}
+          >
             <Input
               className={classes.inputs}
               placeholder="Pick-Up Location"
               defaultValue={places.originPlace}
               inputRef={originRef}
               onChange={() => setButtonText("Check Distance")}
+              onFocus={() => {
+                setDestinationMarker({ ...destinationMarker, show: false });
+                setOriginMarker({ ...originMarker, show: true });
+                setCenter(originMarker.coords);
+              }}
+              endAdornment={
+                <>
+                  &nbsp;&nbsp;
+                  {ogLoader && <CircularProgress size="small" size={20} />}
+                </>
+              }
             />
           </StandaloneSearchBox>
-          <p>Choose From Saved Locations </p>
+          <p
+            onClick={() => {
+              setSavedOg(!showSavedOg);
+              setDestinationMarker({
+                ...destinationMarker,
+                show: false,
+              });
+              setOriginMarker({ ...originMarker, show: true });
+              setCenter(originMarker.coords);
+            }}
+          >
+            {showSavedOg ? "Hide" : "Show"} Saved Locations{" "}
+          </p>
+          {showSavedOg && (
+            <Paper className={classes.savedLocations}>
+              <List>
+                {userData.origins.map((item) => (
+                  <ListItem
+                    onClick={() => {
+                      setOgLoader(true);
+                      convertAutocomplete(item, "origin");
+                      originRef.current.value = item;
+                    }}
+                    className={classes.savedItem}
+                  >
+                    <ListItem button>
+                      <ListItemIcon>
+                        <RoomIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={item} />
+                    </ListItem>
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          )}
         </div>
         <div className="booking-input-container">
-          <StandaloneSearchBox>
+          <StandaloneSearchBox
+            onPlacesChanged={() => {
+              setDesLoader(true);
+              convertAutocomplete(destinationRef.current.value);
+            }}
+          >
             <Input
               className={classes.inputs}
               placeholder="Destination"
               defaultValue={places.destinationPlace}
               inputRef={destinationRef}
               onChange={() => setButtonText("Check Distance")}
+              onFocus={() => {
+                setDestinationMarker({ ...destinationMarker, show: true });
+                setOriginMarker({ ...originMarker, show: false });
+                setCenter(destinationMarker.coords);
+              }}
+              endAdornment={
+                <>
+                  &nbsp;&nbsp;
+                  {desLoader && <CircularProgress size="small" size={20} />}
+                </>
+              }
             />
           </StandaloneSearchBox>
-          <p>Choose From Saved Locations</p>
+          <p
+            onClick={() => {
+              setSavedDes(!showSavedDes);
+              setDestinationMarker({
+                ...destinationMarker,
+                show: true,
+              });
+              setOriginMarker({ ...originMarker, show: false });
+              setCenter(destinationMarker.coords);
+            }}
+          >
+            {showSavedDes ? "Hide" : "Show"} Saved Locations{" "}
+          </p>
+          {showSavedDes && (
+            <Paper className={classes.savedLocations}>
+              <List>
+                {userData.destinations.map((item) => (
+                  <ListItem
+                    onClick={() => {
+                      setDesLoader(true);
+                      convertAutocomplete(item);
+                      destinationRef.current.value = item;
+                    }}
+                    className={classes.savedItem}
+                  >
+                    <ListItem button>
+                      <ListItemIcon>
+                        <RoomIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={item} />
+                    </ListItem>
+                  </ListItem>
+                ))}
+              </List>
+            </Paper>
+          )}
         </div>
         <div className="booking-input-container">
-          <Select
-            style={{ width: "100%", textAlign: "left" }}
-            onChange={(e) => setType(e.target.value)}
-          >
-            <MenuItem value="als">Advanced Life Support (ALS)</MenuItem>
-            <MenuItem value="bls">Basic Life Support (BLS)</MenuItem>
-          </Select>
+          <FormControl>
+            <InputLabel>Ambulance Type</InputLabel>
+            <Select
+              style={{ width: "100%", textAlign: "left" }}
+              onChange={(e) => setAmbulanceType(e.target.value)}
+              value={ambulanceType}
+            >
+              <MenuItem value="als">Advanced Life Support (ALS)</MenuItem>
+              <MenuItem value="bls">Basic Life Support (BLS)</MenuItem>
+            </Select>
+          </FormControl>
           <p onClick={() => setAmbulanceTypeDialog(true)}>What do they mean?</p>
         </div>
+
         <Button
           variant="contained"
           color="primary"
@@ -208,11 +389,14 @@ const Booking = (props) => {
           {buttonText}
         </Button>
 
-        {/*<AmbulanceDetails />
         <AmbulanceTypes
           showDialog={ambulanceTypeDialog}
           setDialog={setAmbulanceTypeDialog}
+          setAmbulanceType={setAmbulanceType}
         />
+
+        {/*<AmbulanceDetails />
+
         <ToDoCarousel />
 
         <Button color="primary" className={classes.cancelButton}>
@@ -220,22 +404,18 @@ const Booking = (props) => {
         </Button>*/}
       </div>
       <GoogleMap
-        zoom={18}
+        zoom={15}
         mapContainerStyle={{ height: "100vh", width: "100%" }}
         center={center}
         onLoad={onMapLoad}
         options={{ disableDefaultUI: true, styles: mainStyle }}
       >
         <TravelMarkers
-          center={center}
           setOriginRef={setOriginRef}
           setDestinationRef={setDestinationRef}
+          showOriginMarker={originMarker}
+          showDestinationMarker={destinationMarker}
         />
-
-        {liveAmbulances.length > 0 &&
-          liveAmbulances.map((item) => (
-            <Marker position={{ lat: item.lat, lng: item.lng }} />
-          ))}
 
         <DirectionsService
           options={{
@@ -246,7 +426,9 @@ const Booking = (props) => {
           callback={directionsCallback}
         />
         {dirResponse !== null && (
-          <DirectionsRenderer options={{ directions: dirResponse }} />
+          <DirectionsRenderer
+            options={{ directions: dirResponse, suppressMarkers: true }}
+          />
         )}
         {matrix && (
           <DistanceMatrixService

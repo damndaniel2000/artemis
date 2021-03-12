@@ -6,7 +6,7 @@ import { setPersonalData } from "../../../state/actions/signup";
 
 import "./Personal.css";
 
-const Personal = ({ setStep }) => {
+const Personal = ({ setStep, setNotification }) => {
   const dispatch = useDispatch();
 
   const data = useSelector((state) => state.signupReducer, shallowEqual);
@@ -15,26 +15,50 @@ const Personal = ({ setStep }) => {
   const [bloodGroup, setBloodGroup] = useState(data.bloodGroup);
 
   const submitForm = (e) => {
-    const inputArr = [
-      "fname",
-      "mname",
-      "lname",
-      "DOB",
-      "age",
-      "weight",
-      "height",
-      "emailId",
-      "aadhar",
-    ];
-    let personalData = {};
-    inputArr.forEach((item) => {
-      personalData[item] = document.getElementById(item).value;
-    });
-    personalData["gender"] = gender;
-    personalData["bloodGroup"] = bloodGroup;
+    e.preventDefault();
+    if (validate()) {
+      const inputArr = [
+        "fname",
+        "mname",
+        "lname",
+        "DOB",
+        "age",
+        "weight",
+        "height",
+        "phoneNo",
+        "emailId",
+        "aadhar",
+      ];
+      let personalData = {};
+      inputArr.forEach((item) => {
+        personalData[item] = document.getElementById(item).value;
+      });
+      personalData["gender"] = gender;
+      personalData["bloodGroup"] = bloodGroup;
 
-    dispatch(setPersonalData(personalData));
-    setStep(1);
+      dispatch(setPersonalData(personalData));
+      setStep(1);
+    }
+  };
+
+  const validate = () => {
+    if (document.getElementById("phoneNo").value.length !== 10) {
+      setNotification({
+        show: true,
+        text: "Phone number should contain 10 digits",
+        severity: "error",
+      });
+      return false;
+    }
+    if (document.getElementById("aadhar").value.length !== 12) {
+      setNotification({
+        show: true,
+        text: "Aadhar Card number should be 12 digits",
+        severity: "error",
+      });
+      return false;
+    }
+    return true;
   };
 
   return (
@@ -90,7 +114,17 @@ const Personal = ({ setStep }) => {
           <div>
             <label> Date of Birth </label>
             <br />
-            <Input defaultValue={data.DOB} id="DOB" type="date" required />
+            <Input
+              onFocus={() =>
+                (document.getElementById(
+                  "DOB"
+                ).max = new Date().toISOString().split("T")[0])
+              }
+              defaultValue={data.DOB}
+              id="DOB"
+              type="date"
+              required
+            />
           </div>
           <div>
             <label> Age </label>
@@ -155,6 +189,17 @@ const Personal = ({ setStep }) => {
           </div>
         </div>
         <div className="signup-form-row">
+          <div>
+            <label> Phone Number </label>
+            <br />
+            <Input
+              type="number"
+              placeholder="+91"
+              defaultValue={data.aadharNo}
+              id="phoneNo"
+              required
+            />
+          </div>
           <div>
             <label> Email Address </label>
             <br />

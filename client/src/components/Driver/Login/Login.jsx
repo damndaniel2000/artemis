@@ -15,7 +15,9 @@ const LoginModal = (props) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await Axios.post("/login", { plateNumber: text });
+      const response = await Axios.post("/api/driver/login", {
+        plateNumber: text,
+      });
       props.setData(response.data);
       handleClose();
     } catch (err) {

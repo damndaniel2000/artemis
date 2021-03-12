@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Preferences = ({ setStep }) => {
+const Preferences = ({ setStep, setNotification }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -114,7 +114,17 @@ const Preferences = ({ setStep }) => {
   };
 
   const submitData = () => {
+    console.log("HERE");
+    if (origins.length === 0 || destinations.length === 0) {
+      setNotification({
+        show: true,
+        text: "Please enter a home and destination address",
+        severity: "error",
+      });
+      return;
+    }
     dispatch(setPreferences(origins, destinations));
+    setStep(3);
   };
 
   const listsMenu = (item) => (
@@ -127,6 +137,19 @@ const Preferences = ({ setStep }) => {
       </Typography>
     </MenuItem>
   );
+
+  React.useEffect(() => {
+    const showPosition = (position) => {
+      setCoords({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+      });
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    }
+  }, []);
 
   const handleSelectChange = () => {
     setSelect(!isSelectOrigin);
@@ -238,10 +261,7 @@ const Preferences = ({ setStep }) => {
           color="primary"
           variant="contained"
           className={classes.navButtons}
-          onClick={() => {
-            setStep(3);
-            submitData();
-          }}
+          onClick={submitData}
         >
           NEXT
         </Button>

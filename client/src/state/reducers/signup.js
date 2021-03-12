@@ -10,6 +10,8 @@ const initialState = {
   height: Number,
   emailId: "",
   aadharNo: "",
+  password: "",
+  phoneNo: "",
 
   allergies: [],
   medications: [],
@@ -17,6 +19,8 @@ const initialState = {
 
   origins: [],
   destinations: [],
+
+  auth: null,
 };
 
 const signupReducer = (state = initialState, action) => {
@@ -35,6 +39,7 @@ const signupReducer = (state = initialState, action) => {
         height: action.height,
         emailId: action.emailId,
         aadharNo: action.aadharNo,
+        phoneNo: action.phoneNo,
       };
     case "SET_MEDICAL":
       return {
@@ -50,6 +55,13 @@ const signupReducer = (state = initialState, action) => {
         destinations: action.destinations,
       };
     }
+    case "SET_PASSWORD": {
+      return {
+        ...state,
+        password: action.password,
+      };
+    }
+
     default:
       return state;
   }

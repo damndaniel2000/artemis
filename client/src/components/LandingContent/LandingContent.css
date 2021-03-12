@@ -1,7 +1,11 @@
+.landing-page {
+  overflow: hidden;
+}
+
 .main-map {
   margin: 0;
   width: 100%;
-  height: 110vh;
+  height: 100%;
   overflow-x: hidden;
   pointer-events: none;
 }
@@ -11,7 +15,8 @@
   position: absolute;
   top: 0.1px;
   width: 100%;
-  height: 110vh;
+  height: 100%;
+  overflow-x: hidden;
 }
 
 .landing-content-container {

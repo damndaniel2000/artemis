@@ -1,7 +1,13 @@
 import React, { useRef } from "react";
 import { useSpring, animated } from "react-spring";
 import { StandaloneSearchBox } from "@react-google-maps/api";
-import { Grid, Button, Input, InputAdornment } from "@material-ui/core";
+import {
+  Grid,
+  Button,
+  Input,
+  InputAdornment,
+  CircularProgress,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
 import Geocode from "react-geocode";
@@ -37,6 +43,7 @@ const Search = (props) => {
   const dispatch = useDispatch();
 
   const searchBox = useRef();
+  const [loader, showLoader] = React.useState(false);
 
   const transition = useSpring({
     transform: "translateX(0%)",
@@ -44,11 +51,13 @@ const Search = (props) => {
   });
 
   const handleSubmit = () => {
+    showLoader(true);
     const origin = searchBox.current.value;
     Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
     Geocode.fromAddress(origin).then((response) => {
       const { lat, lng } = response.results[0].geometry.location;
       dispatch(setOrigin(lat, lng, origin));
+      showLoader(false);
       history.push("/booking");
     });
   };
@@ -88,22 +97,24 @@ const Search = (props) => {
             classes={{ focused: classes.searchFocused }}
             onClick={handleSubmit}
           >
-            Search
+            Search{loader && <CircularProgress color="white" />}
           </Button>
         </div>
-        <p
-          onClick={() => {
-            props.showSearch(false);
-            if (props.endPoint === "login") {
-              props.showLogin(true);
-            } else if (props.endPoint === "guest") {
-              props.showOTP(true);
-            }
-          }}
-          className="back-button"
-        >
-          &lt; Back
-        </p>
+        {localStorage.getItem("art-auth") !== null ? null : (
+          <p
+            onClick={() => {
+              props.showSearch(false);
+              if (props.endPoint === "login") {
+                props.showLogin(true);
+              } else if (props.endPoint === "guest") {
+                props.showOTP(true);
+              }
+            }}
+            className="back-button"
+          >
+            &lt; Back
+          </p>
+        )}
       </Grid>
     </animated.div>
   );

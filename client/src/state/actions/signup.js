@@ -13,6 +13,7 @@ export const setPersonalData = (a) => ({
   height: a.height,
   emailId: a.emailId,
   aadharNo: a.aadhar,
+  phoneNo: a.phoneNo,
 });
 
 export const setMedicalData = (a, b, c) => ({
@@ -26,6 +27,11 @@ export const setPreferences = (a, b) => ({
   type: "SET_PREFERENCES",
   origins: a,
   destinations: b,
+});
+
+export const setPassword = (pass) => ({
+  type: "SET_PASSWORD",
+  password: pass,
 });
 
 export const makeAccount = () => (dispatch, getState) => {

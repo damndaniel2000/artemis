@@ -46,7 +46,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("ambulance_request", (data) => {
-    socket.broadcast.to(data.type).emit("driver_request", data);
+    socket.broadcast.to(data.ambulanceType).emit("driver_request", data);
   });
   socket.on("driver_accept", (data) => {
     socket.to(data.id).emit("accept_request", data);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { useDispatch } from "react-redux";
+import Axios from "axios";
 
 import "./LandingContent.css";
 import backgroundImg from "./background.png";
@@ -13,15 +14,17 @@ import PhoneVerification from "./PhoneVerification/PhoneVerification";
 import OTPVerification from "./PhoneVerification/OTPInput";
 
 import { saveAmbulancePositions } from "../../state/actions/booking";
+import { saveUserData, setAuth } from "../../state/actions/user";
 
 const socket = io.connect("/");
 
 const Landing = () => {
   const dispatch = useDispatch();
+  const token = localStorage.getItem("art-auth");
 
-  const [showSearch, setSearch] = useState(false);
+  const [showSearch, setSearch] = useState(token !== null ? true : false);
   const [showLogin, setLogin] = useState(false);
-  const [showButtons, setButtons] = useState(true);
+  const [showButtons, setButtons] = useState(token !== null ? false : true);
   const [showPhone, setPhone] = useState(false);
   const [showOTP, setOTP] = useState(false);
 
@@ -33,29 +36,21 @@ const Landing = () => {
   const [otpTrans, setOTPTrans] = useState(true);
 
   useEffect(() => {
-    socket.on("get_ambulance_positions_response", (data) =>
-      dispatch(saveAmbulancePositions(data))
-    );
-    //eslint-disable-next-line
-  }, [socket.json]);
-  useEffect(() => {
     socket.emit("get_ambulance_positions_request");
+    socket.on("get_ambulance_positions_response", (data) => {
+      dispatch(saveAmbulancePositions(data));
+    });
+
+    if (token !== null) {
+      dispatch(setAuth(true));
+      Axios.post("/api/users/getUserInfo", { emailId: token })
+        .then((res) => dispatch(saveUserData(res.data)))
+        .catch((err) => console.log(err));
+    }
   }, []);
 
   return (
-    <>
-      {/*<GoogleMap
-        id="map"
-        mapContainerStyle={{ width: "100%", height: "100vh" }}
-        zoom={12}
-        center={{
-          lat: 19.075983,
-          lng: 72.877655,
-        }}
-        options={{ styles: backgroundStyle, disableDefaultUI: true }}
-        onLoad={() => setLoading(false)}
-      />*/}
-
+    <div className="landing-page">
       <img src={backgroundImg} className="main-map" alt="backgroundImg" />
       <div className="map-opacity"></div>
       <NavBar />
@@ -110,7 +105,7 @@ const Landing = () => {
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
 

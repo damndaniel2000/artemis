@@ -33,7 +33,7 @@ const UserButtons = (props) => {
               props.setEndpoint("guest");
             }}
           >
-            New User
+            One Time Use
           </Button>
           <Button
             color="primary"

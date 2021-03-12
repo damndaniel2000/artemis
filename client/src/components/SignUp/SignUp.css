@@ -56,3 +56,9 @@
 .multisteps-form__progress-btn.js-active:before {
   background-color: currentColor;
 }
+.MuiAlert-message {
+  padding: 8px 0;
+  font-family: rajdhani;
+  font-size: 1rem;
+  font-weight: 600;
+}

@@ -38,6 +38,7 @@ const Driver = () => {
   useEffect(() => {
     if (ambulanceData) {
       socket.emit(ambulanceData.type);
+      console.log(ambulanceData.type);
       socket.emit("save_ambulance_position", ambulanceData.position);
     }
   }, [ambulanceData]);
