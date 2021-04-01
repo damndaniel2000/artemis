@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
+import Geocode from "react-geocode";
 
 import "./Driver.css";
 
@@ -43,6 +44,15 @@ const Driver = () => {
     }
   }, [ambulanceData]);
 
+  const acceptAmbulanceRequest = () => {
+    const data = ambulanceData;
+    Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
+    Geocode.fromLatLng(data.position.lat, data.position.lng).then((res) => {
+      data.address = res.results[0].formatted_address;
+      socket.emit("driver_accept", { id: userId, data });
+    });
+  };
+
   return (
     <>
       <div className="driver-top-container">
@@ -71,15 +81,7 @@ const Driver = () => {
           <DriverCards />
         </div>
         <div className="driver-staff-container">
-          {request && (
-            <button
-              onClick={() =>
-                socket.emit("driver_accept", { id: userId, ambulanceData })
-              }
-            >
-              ACCEPT
-            </button>
-          )}
+          {request && <button onClick={acceptAmbulanceRequest}>ACCEPT</button>}
           {/*<RecentTrips />*/}
         </div>
         <Login

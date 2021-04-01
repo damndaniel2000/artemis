@@ -19,6 +19,7 @@ const LoginModal = (props) => {
         plateNumber: text,
       });
       props.setData(response.data);
+      console.log(response.data);
       handleClose();
     } catch (err) {
       console.log(err);

@@ -5,8 +5,8 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import "./AmbulanceTypes.css";
 
-import alsImg from "../../../assets/booking/als.svg";
-import blsImg from "../../../assets/booking/bls.png";
+import alsImg from "../../../../assets/booking/als.svg";
+import blsImg from "../../../../assets/booking/bls.png";
 
 const Types = ({ showDialog, setDialog, setAmbulanceType }) => {
   return (

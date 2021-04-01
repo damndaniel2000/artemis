@@ -8,28 +8,35 @@ import cpr from "../../../assets/booking/cpr.svg";
 
 import "./ToDoCarousel.css";
 
-const home = [
-  {
-    img: alert,
-    msg: "Things to do while waiting for your ambulance to arrive.",
-  },
-  {
-    img: jewellery,
-    msg: "Remove all jewellery from the victim as it may get misplaced.",
-  },
-  {
-    img: pets,
-    msg:
-      "Please tie or isolate your pets if you have any as they may interrupt the staff",
-  },
-  {
-    img: cpr,
-    msg:
-      "If victim is not breathing, perform CPR (only if you are sure you can). Video here",
-  },
-];
+const ToDoCarousel = ({ showCprDialog }) => {
+  const home = [
+    {
+      img: alert,
+      msg: "Things to do while waiting for your ambulance to arrive.",
+    },
+    {
+      img: jewellery,
+      msg: "Remove all jewellery from the victim as it may get misplaced.",
+    },
+    {
+      img: pets,
+      msg:
+        "Please tie or isolate your pets if you have any as they may interrupt the staff",
+    },
+    {
+      img: cpr,
+      msg: (
+        <>
+          If victim is not breathing, perform CPR (only if you are sure you
+          can). Video{" "}
+          <a href="" onClick={() => showCprDialog(true)}>
+            here
+          </a>
+        </>
+      ),
+    },
+  ];
 
-const ToDoCarousel = () => {
   return (
     <div className="todo-carousel-container">
       <Carousel

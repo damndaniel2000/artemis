@@ -37,7 +37,7 @@ const DriverCards = () => {
     {
       avatar: paraF,
       designation: "Paramedic",
-      name: "Abigail Monteiro",
+      name: "Pearl Dias",
       contact: "9948374631",
       experience: "4 years",
     },

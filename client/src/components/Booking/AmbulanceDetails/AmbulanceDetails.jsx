@@ -12,14 +12,21 @@ const useStyles = makeStyles({
   },
 });
 
-const AmbulanceDetails = () => {
+const AmbulanceDetails = ({
+  ambulanceData,
+  travelTime,
+  origin,
+  destination,
+}) => {
   const classes = useStyles();
 
   return (
     <>
       <div className="ambulance-details">
         <div className="ambulance-details-time-left-container">
-          <h2 className="ambulance-details-time-left"> 20 </h2>
+          <h2 className="ambulance-details-time-left">
+            {travelTime.substring(0, 2)}
+          </h2>
           <h4 className="ambulance-details-time-left-text"> mins away</h4>
         </div>
         <div>
@@ -28,8 +35,10 @@ const AmbulanceDetails = () => {
             alt="ambulance"
             className="ambulance-details-img"
           />
-          <h3 className="ambulance-details-plate"> MH 02 TN 2001 </h3>
-          <h4 className="ambulance-details-type"> Advanced Life Support </h4>
+          <h3 className="ambulance-details-plate">
+            {ambulanceData.plateNumber}
+          </h3>
+          <h4 className="ambulance-details-type"> {ambulanceData.type} </h4>
           <br />
           <Button
             className="ambulance-details-button"
@@ -44,23 +53,25 @@ const AmbulanceDetails = () => {
         <Input
           className={classes.inputs}
           label="Pick Up From"
-          value="Lokmilan, Chandivali"
+          value={origin.current !== null ? origin.current.value : ""}
           endAdornment={
             <InputAdornment position="end">
               <span className="ambulance-details-input-adorn">Change</span>
             </InputAdornment>
           }
         />
+        {console.log(destination, "THERE")}
         <Input
           className={classes.inputs}
           label="Destination"
-          value="Hinduja Hospital OPD"
+          value={destination.current !== null ? destination.current.value : ""}
           endAdornment={
             <InputAdornment position="end">
               <span className="ambulance-details-input-adorn">Change</span>
             </InputAdornment>
           }
         />
+        {console.log(ambulanceData)}
       </div>
     </>
   );
