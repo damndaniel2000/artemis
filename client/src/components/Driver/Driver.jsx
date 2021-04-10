@@ -5,7 +5,7 @@ import Geocode from "react-geocode";
 import "./Driver.css";
 
 import DriverCards from "./DriverCards/DriverCards";
-// import RecentTrips from "./RecentTrips/RecentTrips";
+import RecentTrips from "./RecentTrips/RecentTrips";
 import Login from "./Login/Login";
 
 import StarIcon from "@material-ui/icons/Star";
@@ -82,7 +82,7 @@ const Driver = () => {
         </div>
         <div className="driver-staff-container">
           {request && <button onClick={acceptAmbulanceRequest}>ACCEPT</button>}
-          {/*<RecentTrips />*/}
+          <RecentTrips />
         </div>
         <Login
           open={loginDialog}

@@ -81,6 +81,7 @@ const Directions = (props) => {
           <Marker
             position={{ lat: item.lat, lng: item.lng }}
             icon={ambulance}
+            draggable
           />
         ))}
     </>

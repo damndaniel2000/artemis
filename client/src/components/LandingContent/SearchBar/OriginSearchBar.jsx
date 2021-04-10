@@ -70,7 +70,7 @@ const Search = (props) => {
         direction="column"
         alignItems="center"
         justify="center"
-        style={{ minHeight: "100vh" }}
+        style={{ minHeight: "90vh" }}
       >
         <div className="searchbar-container">
           <div>

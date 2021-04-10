@@ -18,6 +18,8 @@ const OTPInput = (props) => {
   const secondInput = useRef();
   const thirdInput = useRef();
   const fourthInput = useRef();
+  const fifthInput = useRef();
+  const sixthInput = useRef();
 
   const forwardTransition = useSpring({
     transform: "translateX(0%)",
@@ -34,6 +36,8 @@ const OTPInput = (props) => {
     secondInput.current.blur();
     thirdInput.current.blur();
     fourthInput.current.blur();
+    fifthInput.current.blur();
+    sixthInput.current.blur();
   }, []);
 
   const onChange = (e) => {
@@ -46,6 +50,23 @@ const OTPInput = (props) => {
     if (thirdInput.current.value.length === 1) {
       fourthInput.current.focus();
     }
+    if (fourthInput.current.value.length === 1) {
+      fifthInput.current.focus();
+    }
+    if (fifthInput.current.value.length === 1) {
+      sixthInput.current.focus();
+    }
+  };
+
+  const submitOTP = () => {
+    const otp =
+      firstInput.current.value +
+      secondInput.current.value +
+      thirdInput.current.value +
+      fourthInput.current.value +
+      fifthInput.current.value +
+      sixthInput.current.value;
+    props.setOtp(otp);
   };
 
   return (
@@ -68,7 +89,8 @@ const OTPInput = (props) => {
           </Typography>
           <p className="otp-verification-sent">
             A 4 digit code has been sent to
-            <br /> <b>99440331928</b>. <span className="links">Change?</span>
+            <br /> <b>{props.phoneNumber.current.value}</b>.{" "}
+            <span className="links">Change?</span>
           </p>
           <div className="otp-verification">
             <input
@@ -110,6 +132,28 @@ const OTPInput = (props) => {
                 }
               }}
             />
+            <input
+              maxLength="1"
+              ref={fifthInput}
+              placeholder=" "
+              onChange={(e) => onChange(e)}
+              onKeyDown={(e) => {
+                if (e.key === "Backspace" && fifthInput.current.value === "") {
+                  fourthInput.current.focus();
+                }
+              }}
+            />
+            <input
+              maxLength="1"
+              ref={sixthInput}
+              placeholder=" "
+              onChange={(e) => onChange(e)}
+              onKeyDown={(e) => {
+                if (e.key === "Backspace" && sixthInput.current.value === "") {
+                  fifthInput.current.focus();
+                }
+              }}
+            />
           </div>
           <p>
             Didn't receive any code?
@@ -119,11 +163,7 @@ const OTPInput = (props) => {
             color="primary"
             variant="contained"
             className="otp-verification-button"
-            onClick={() => {
-              props.showSearch(true);
-              props.showOTP(false);
-              props.changeOTPTrans(false);
-            }}
+            onClick={submitOTP}
           >
             Verify
           </Button>

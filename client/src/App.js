@@ -30,7 +30,7 @@ const App = () => {
       console.log(data);
       dispatch(saveAmbulancePositions(data));
     });
-  }, [socket]);
+  }, [socket.json]);
   React.useEffect(() => {
     if (token !== null) {
       dispatch(setAuth(true));

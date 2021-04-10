@@ -4,11 +4,13 @@
   display: flex;
   color: #fff;
   justify-content: space-between;
-  width: 98%;
+  width: 95%;
   align-items: center;
   padding: 2rem 0 0 2rem;
   margin-right: 0;
 }
 .logo {
   font-size: 30px;
+  font-family: Sacramento;
+  color: red;
 }

@@ -30,6 +30,8 @@ const useStyles = makeStyles({
 const Verify = (props) => {
   const classes = useStyles();
 
+  const phoneNumber = React.useRef(null);
+
   const forwardTransition = useSpring({
     transform: "translateX(0%)",
     from: { transform: "translateX(50%)" },
@@ -56,6 +58,7 @@ const Verify = (props) => {
             <Input
               className={classes.search}
               placeholder="Phone Number"
+              inputRef={props.phoneNumber}
               startAdornment={
                 <InputAdornment position="start">
                   <CallOutlinedIcon
@@ -71,15 +74,13 @@ const Verify = (props) => {
             color="primary"
             variant="contained"
             className={classes.button}
-            onClick={() => {
-              props.showOTP(true);
-              props.showPhone(false);
-              props.changePhoneTrans(false);
-            }}
+            onClick={props.sendOTP}
           >
             Send OTP
           </Button>
         </div>
+        <div id="recaptcha" />
+
         <p
           className="back-button"
           onClick={() => {

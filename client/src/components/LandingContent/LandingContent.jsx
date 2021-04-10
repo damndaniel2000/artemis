@@ -1,4 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Snackbar } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
+import { config } from "../../firebase";
+import firebase from "firebase";
 
 import "./LandingContent.css";
 import backgroundImg from "./background.png";
@@ -9,6 +13,8 @@ import UserButtons from "./UserButtons/UserButtons";
 import Login from "./Login/Login.jsx";
 import PhoneVerification from "./PhoneVerification/PhoneVerification";
 import OTPVerification from "./PhoneVerification/OTPInput";
+
+const app = firebase.initializeApp(config);
 
 const Landing = () => {
   const token = localStorage.getItem("art-auth");
@@ -25,6 +31,50 @@ const Landing = () => {
   const [logTrans, setLogTrans] = useState(true);
   const [phoneTrans, setPhoneTrans] = useState(true);
   const [otpTrans, setOTPTrans] = useState(true);
+
+  const phoneNumber = React.useRef(null);
+  const [otp, setOtpFromInput] = useState();
+  const [otpReply, setOtpReply] = useState();
+
+  const [notification, setNotification] = useState({
+    show: false,
+  });
+
+  const sendOTP = () => {
+    const number = "+91" + phoneNumber.current.value;
+    const recaptcha = new firebase.auth.RecaptchaVerifier("recaptcha");
+
+    app
+      .auth()
+      .signInWithPhoneNumber(number, recaptcha)
+      .then((res) => {
+        setOtpReply(res);
+        setOTP(true);
+        setPhone(false);
+        setPhoneTrans(false);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleNotificationClose = () => setNotification({ show: false });
+
+  useEffect(() => {
+    if (otp)
+      otpReply
+        .confirm(otp)
+        .then((res) => {
+          setSearch(true);
+          setOTP(false);
+          setOTPTrans(false);
+        })
+        .catch((err) =>
+          setNotification({
+            show: true,
+            text: "Invalid Code",
+            severity: "error",
+          })
+        );
+  }, [otp]);
 
   return (
     <div className="landing-page">
@@ -60,6 +110,8 @@ const Landing = () => {
             phoneTrans={phoneTrans}
             changePhoneTrans={setPhoneTrans}
             changeOTPTrans={setOTPTrans}
+            phoneNumber={phoneNumber}
+            sendOTP={sendOTP}
           />
         )}
         {showOTP && (
@@ -69,6 +121,8 @@ const Landing = () => {
             showSearch={setSearch}
             otpTrans={otpTrans}
             changeOTPTrans={setOTPTrans}
+            setOtp={setOtpFromInput}
+            phoneNumber={phoneNumber}
           />
         )}
         {showSearch && (
@@ -82,6 +136,20 @@ const Landing = () => {
           />
         )}
       </div>
+      <Snackbar
+        open={notification.show}
+        autoHideDuration={5000}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleNotificationClose}
+          severity={notification.severity}
+          variant="filled"
+        >
+          {notification.text}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

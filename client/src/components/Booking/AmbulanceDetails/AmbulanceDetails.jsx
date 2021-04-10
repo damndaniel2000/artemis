@@ -38,7 +38,7 @@ const AmbulanceDetails = ({
           <h3 className="ambulance-details-plate">
             {ambulanceData.plateNumber}
           </h3>
-          <h4 className="ambulance-details-type"> {ambulanceData.type} </h4>
+          <h4 className="ambulance-details-type"> ALS </h4>
           <br />
           <Button
             className="ambulance-details-button"
@@ -53,7 +53,8 @@ const AmbulanceDetails = ({
         <Input
           className={classes.inputs}
           label="Pick Up From"
-          value={origin.current !== null ? origin.current.value : ""}
+          value="Lokmilan, Chandivali"
+          // value={origin.current !== null ? origin.current.value : ""}
           endAdornment={
             <InputAdornment position="end">
               <span className="ambulance-details-input-adorn">Change</span>
@@ -64,7 +65,8 @@ const AmbulanceDetails = ({
         <Input
           className={classes.inputs}
           label="Destination"
-          value={destination.current !== null ? destination.current.value : ""}
+          value="Hinduja Hospital, Mahim"
+          // value={destination.current !== null ? destination.current.value : ""}
           endAdornment={
             <InputAdornment position="end">
               <span className="ambulance-details-input-adorn">Change</span>

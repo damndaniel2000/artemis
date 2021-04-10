@@ -38,7 +38,6 @@ const Login = (props) => {
     })
       .then((res) => {
         if (res.data === "OK") {
-          //  localStorage.setItem("art-auth", "true");
           props.showSearch(true);
           props.showLogin(false);
           props.changeLoginTrans(false);

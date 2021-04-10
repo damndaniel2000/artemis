@@ -79,7 +79,6 @@ const Booking = (props) => {
   });
   const [origin, setOg] = useState("");
   const [destination, setDes] = useState("");
-  const [dirResponse, setDirResponse] = useState(null);
   const [originCoords, setOriginCoords] = useState({
     lat: Number,
     lng: Number,
@@ -90,7 +89,12 @@ const Booking = (props) => {
   });
 
   const [matrix, runMatrix] = useState(false);
-  const [runDirections, setRunDirections] = useState(true);
+
+  const [runDirections1, setRunDirections1] = useState(true);
+  const [runDirections2, setRunDirections2] = useState(false);
+  const [dirResponse1, setDirResponse1] = useState(null);
+  const [dirResponse2, setDirResponse2] = useState(null);
+
   const [isBooking, setIsBooking] = useState(true);
 
   const [travelTime, setTime] = useState("");
@@ -130,14 +134,13 @@ const Booking = (props) => {
   useEffect(() => {
     socket.on("accept_request", (res) => {
       const response = res.data;
-      console.log(response);
-      setRunDirections(false);
-      setDirResponse(null);
+      setRunDirections1(false);
+      setRunDirections2(true);
+      setDirResponse1(null);
       setDes(response.address);
       setIsBooking(false);
       setAmbulanceData(response);
       setDesCoords({ lat: response.position.lat, lng: response.position.lng });
-      runMatrix(true);
     });
     //eslint-disable-next-line
   }, [socket.json]);
@@ -202,7 +205,7 @@ const Booking = (props) => {
   };
 
   useEffect(() => {
-    setRunDirections(true);
+    setRunDirections1(true);
     if (originRef.current !== null) {
       if (originRef.current.value !== "" && destinationRef.current.value !== "")
         convert();
@@ -210,23 +213,35 @@ const Booking = (props) => {
     //eslint-disable-next-line
   }, [origin, destination]);
 
-  const directionsCallback = (res) => {
+  const directionsCallback1 = (res) => {
     if (res !== null && origin !== "") {
-      setDirResponse(res);
+      setDirResponse1(res);
       setButtonText("Book Ambulance");
     }
   };
+  const directionsCallback2 = (res) => {
+    if (res !== null) {
+      setDirResponse1(res);
+    }
+  };
+
   useEffect(() => {
-    if (dirResponse !== null) {
+    if (dirResponse1 !== null) {
       setDestinationMarker({ ...destinationMarker, show: true });
       setOriginMarker({ ...originMarker, show: true });
     }
-  }, [dirResponse]);
+  }, [dirResponse1]);
+
+  useEffect(() => {
+    if (dirResponse2 !== null) {
+      runMatrix(true);
+    }
+  }, [dirResponse2]);
 
   const distanceMatrixCallback = (res) => {
     runMatrix(false);
     const totalTime = res.rows[0].elements[0].duration.text;
-    if (totalTime) setTime(totalTime);
+    if (totalTime && runDirections2) setTime(totalTime);
   };
 
   // const ambulanceMarker = (type) => {
@@ -251,7 +266,7 @@ const Booking = (props) => {
       address: originRef.current.value,
       name: `${currentUser.fname} ${currentUser.lname}`,
     };
-    setRunDirections(false);
+    setRunDirections1(false);
     console.log(userData);
     socket.emit("ambulance_request", {
       ambulanceType,
@@ -280,7 +295,7 @@ const Booking = (props) => {
                   inputRef={originRef}
                   onChange={() => {
                     setButtonText("Check Distance");
-                    setDirResponse(null);
+                    setDirResponse1(null);
                     setOg("");
                   }}
                   onFocus={() => {
@@ -347,7 +362,7 @@ const Booking = (props) => {
                   inputRef={destinationRef}
                   onChange={() => {
                     setButtonText("Check Distance");
-                    setDirResponse(null);
+                    setDirResponse1(null);
                     setOg("");
                   }}
                   onFocus={() => {
@@ -463,21 +478,38 @@ const Booking = (props) => {
           showDestinationMarker={destinationMarker}
         />
 
-        {runDirections && (
+        {runDirections1 && (
           <DirectionsService
             options={{
               destination: destination,
               origin: origin,
               travelMode: "DRIVING",
             }}
-            callback={directionsCallback}
+            callback={directionsCallback1}
           />
         )}
-        {dirResponse !== null && (
+        {dirResponse1 !== null && (
           <DirectionsRenderer
-            options={{ directions: dirResponse, suppressMarkers: true }}
+            options={{ directions: dirResponse1, suppressMarkers: true }}
           />
         )}
+
+        {runDirections2 && (
+          <DirectionsService
+            options={{
+              destination: destination,
+              origin: origin,
+              travelMode: "DRIVING",
+            }}
+            callback={directionsCallback2}
+          />
+        )}
+        {dirResponse2 !== null && (
+          <DirectionsRenderer
+            options={{ directions: dirResponse2, suppressMarkers: true }}
+          />
+        )}
+
         {matrix && (
           <DistanceMatrixService
             options={{
