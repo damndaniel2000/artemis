@@ -58,7 +58,7 @@ const Verify = (props) => {
             <Input
               className={classes.search}
               placeholder="Phone Number"
-              inputRef={props.phoneNumber}
+              onChange={(e) => props.setPhoneNumber(e.target.value)}
               startAdornment={
                 <InputAdornment position="start">
                   <CallOutlinedIcon
@@ -79,6 +79,7 @@ const Verify = (props) => {
             Send OTP
           </Button>
         </div>
+		
         <div id="recaptcha" />
 
         <p

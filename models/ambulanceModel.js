@@ -7,6 +7,26 @@ const ambulanceSchema = new Schema({
     required: true,
     unique: true,
   },
+  password: {
+    type: String,
+    required: true,
+  },
+  feedback: [
+    {
+      rating: {
+        type: String,
+      },
+      comments: {
+        type: String,
+      },
+      destination: {
+        type: String,
+      },
+      date: {
+        type: String,
+      },
+    },
+  ],
   type: {
     type: String,
     require: true,

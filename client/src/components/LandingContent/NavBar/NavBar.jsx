@@ -9,14 +9,29 @@ const Nav = () => {
   return (
     <div className="nav-strip">
       <div className="logo"> Artemis </div>
-      <Button
-        style={{ borderRadius: "50px" }}
-        variant="contained"
-        color="primary"
-        onClick={() => history.push("/sign-up")}
-      >
-        SIGN UP
-      </Button>
+      {localStorage.getItem("art-auth") === null && (
+        <Button
+          style={{ borderRadius: "50px" }}
+          variant="contained"
+          color="primary"
+          onClick={() => history.push("/sign-up")}
+        >
+          SIGN UP
+        </Button>
+      )}
+      {localStorage.getItem("art-auth") === "dsouzaian2000@gmail.com" && (
+        <Button
+          style={{ borderRadius: "50px" }}
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            localStorage.removeItem("art-auth");
+            window.open("/", "_self");
+          }}
+        >
+          LOG OUT
+        </Button>
+      )}
     </div>
   );
 };

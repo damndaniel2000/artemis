@@ -7,6 +7,7 @@ import "./Driver.css";
 import DriverCards from "./DriverCards/DriverCards";
 import RecentTrips from "./RecentTrips/RecentTrips";
 import Login from "./Login/Login";
+import AcceptRequestDialog from "./AcceptRequestDialog/AcceptRequestDialog";
 
 import StarIcon from "@material-ui/icons/Star";
 
@@ -14,6 +15,7 @@ const socket = io.connect("/");
 
 const Driver = () => {
   const [ambulanceData, setData] = useState();
+  const [userData, setUserData] = useState(null);
 
   const [request, showRequest] = useState(false);
   const [userId, setUserId] = useState();
@@ -25,12 +27,15 @@ const Driver = () => {
     });
 
     socket.on("driver_request", (data) => {
-      showRequest(true);
       setUserId(data.id);
-      console.log(data);
+      setUserData(data);
     });
     //eslint-disable-next-line
   }, [socket.json]);
+
+  useEffect(() => {
+    if (userData !== null) showRequest(true);
+  }, [userData]);
 
   useEffect(() => {
     showLoginDialog(true);
@@ -39,17 +44,21 @@ const Driver = () => {
   useEffect(() => {
     if (ambulanceData) {
       socket.emit(ambulanceData.type);
-      console.log(ambulanceData.type);
       socket.emit("save_ambulance_position", ambulanceData.position);
     }
   }, [ambulanceData]);
 
   const acceptAmbulanceRequest = () => {
     const data = ambulanceData;
-    Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
+    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     Geocode.fromLatLng(data.position.lat, data.position.lng).then((res) => {
       data.address = res.results[0].formatted_address;
+      data.phoneNumber = "9923847371";
       socket.emit("driver_accept", { id: userId, data });
+      showRequest(false);
+      window.open(
+        `https://www.google.com/maps/dir/?api=1&origin=${res.results[0].formatted_address}&destination=${userData.userData.address}&travelmode=driving`
+      );
     });
   };
 
@@ -60,7 +69,12 @@ const Driver = () => {
           <h2 className="license-plate">
             {ambulanceData && ambulanceData.plateNumber}
           </h2>
-          <span> Advanced Life Support </span>
+          <span>
+            {" "}
+            {ambulanceData && ambulanceData.type === "als"
+              ? "Advanced Life Support"
+              : "Basic Life Support"}{" "}
+          </span>
           <div
             style={{
               display: "flex",
@@ -81,8 +95,7 @@ const Driver = () => {
           <DriverCards />
         </div>
         <div className="driver-staff-container">
-          {request && <button onClick={acceptAmbulanceRequest}>ACCEPT</button>}
-          <RecentTrips />
+          <RecentTrips ambulanceData={ambulanceData} />
         </div>
         <Login
           open={loginDialog}
@@ -90,6 +103,12 @@ const Driver = () => {
           setData={setData}
         />
       </div>
+      <AcceptRequestDialog
+        open={request}
+        setOpen={showRequest}
+        acceptRequest={acceptAmbulanceRequest}
+        data={userData}
+      />
     </>
   );
 };

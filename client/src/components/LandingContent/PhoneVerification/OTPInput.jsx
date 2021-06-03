@@ -89,8 +89,17 @@ const OTPInput = (props) => {
           </Typography>
           <p className="otp-verification-sent">
             A 4 digit code has been sent to
-            <br /> <b>{props.phoneNumber.current.value}</b>.{" "}
-            <span className="links">Change?</span>
+            <br /> <b>{props.phoneNumber}</b>.{" "}
+            <span
+              className="links"
+              onClick={() => {
+                props.showOTP(false);
+                props.showPhone(true);
+                props.changeOTPTrans(true);
+              }}
+            >
+              Change?
+            </span>
           </p>
           <div className="otp-verification">
             <input
@@ -157,7 +166,17 @@ const OTPInput = (props) => {
           </div>
           <p>
             Didn't receive any code?
-            <span className="links"> Resend the code.</span>
+            <span
+              className="links"
+              onClick={() => {
+                props.showOTP(false);
+                props.showPhone(true);
+                props.changeOTPTrans(true);
+              }}
+            >
+              {" "}
+              Resend the code.
+            </span>
           </p>
           <Button
             color="primary"

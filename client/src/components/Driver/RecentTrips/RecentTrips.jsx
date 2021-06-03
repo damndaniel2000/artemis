@@ -27,7 +27,7 @@ const useStyles = makeStyles({
   },
 });
 
-const RecentTrips = () => {
+const RecentTrips = ({ ambulanceData }) => {
   const classes = useStyles();
 
   const recent = [
@@ -56,31 +56,26 @@ const RecentTrips = () => {
       <Typography className={classes.title} variant="h4" color="primary">
         Recent Trips
       </Typography>
-      {recent.map((item) => (
-        <Card className="recenttrips-card">
-          <CardMedia
-            className={classes.media}
-            image={`${item.img}&key=AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA&format=png&visual_refresh=true`}
-            title="Destination"
-          />
-          <CardContent className="recenttrips-content">
-            <p> {item.dateTime}</p>
-            <p> {item.destination} </p>
-            <Rating name="read-only" value={3.5} precision={0.5} readOnly />
-          </CardContent>
-          <CardActions>
-            <Button
-              className={classes.button}
-              variant="contained"
-              size="small"
-              color="primary"
-              disableElevation
-            >
-              More Details
-            </Button>
-          </CardActions>
-        </Card>
-      ))}
+      {ambulanceData &&
+        ambulanceData.feedback.map((item) => (
+          <Card className="recenttrips-card">
+            <CardMedia
+              className={classes.media}
+              image={`https://maps.googleapis.com/maps/api/staticmap?center=${item.destination}&zoom=13&scale=1&size=600x300&maptype=roadmap&key=AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA&format=png&visual_refresh=true`}
+              title="Destination"
+            />
+            <CardContent className="recenttrips-content">
+              <p> {item.date}</p>
+              <p> {item.destination} </p>
+              <Rating
+                name="read-only"
+                value={parseInt(item.rating)}
+                precision={0.5}
+                readOnly
+              />
+            </CardContent>
+          </Card>
+        ))}
     </>
   );
 };

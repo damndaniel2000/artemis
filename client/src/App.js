@@ -17,7 +17,7 @@ import Driver from "./components/Driver/Driver";
 import { saveAmbulancePositions } from "./state/actions/booking";
 import { saveUserData, setAuth } from "./state/actions/user";
 
-const apiKey = "AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA";
+const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 const socket = io.connect("/");
 
 const App = () => {
@@ -27,7 +27,6 @@ const App = () => {
   React.useEffect(() => {
     socket.emit("get_ambulance_positions_request");
     socket.on("get_ambulance_positions_response", (data) => {
-      console.log(data);
       dispatch(saveAmbulancePositions(data));
     });
   }, [socket.json]);

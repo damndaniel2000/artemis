@@ -25,6 +25,7 @@ import {
 } from "@material-ui/core";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import io from "socket.io-client";
+import { useHistory } from "react-router-dom";
 
 import "./Booking.css";
 import { mainStyle } from "../../misc/mapStyles/mainStyle";
@@ -35,6 +36,7 @@ import TravelMarkers from "./TravelMarkers/TravelMarkers";
 import AmbulanceTypes from "./AmbulanceDialogs/AmbulanceTypes/AmbulanceTypes";
 import AmbulanceDetails from "./AmbulanceDetails/AmbulanceDetails";
 import ToDoCarousel from "./ToDoCarousel/ToDoCarousel";
+import FeedbackDialog from "./FeedbackDialog/FeedbackDialog";
 
 import CPRDialog from "./AmbulanceDialogs/CPR";
 
@@ -66,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 const Booking = (props) => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const history = useHistory();
 
   const places = useSelector((state) => state.bookingReducer, shallowEqual);
   const currentUser = useSelector(
@@ -87,6 +90,10 @@ const Booking = (props) => {
     lat: Number,
     lng: Number,
   });
+  const [desCoords2, setDesCoords2] = useState({
+    lat: Number,
+    lng: Number,
+  });
 
   const [matrix, runMatrix] = useState(false);
 
@@ -103,6 +110,7 @@ const Booking = (props) => {
 
   const [ambulanceTypeDialog, setAmbulanceTypeDialog] = useState(false);
   const [cprDialog, showCprDialog] = useState(false);
+  const [feedback, showFeedback] = useState(false);
 
   const [ambulanceData, setAmbulanceData] = useState({});
 
@@ -140,13 +148,14 @@ const Booking = (props) => {
       setDes(response.address);
       setIsBooking(false);
       setAmbulanceData(response);
-      setDesCoords({ lat: response.position.lat, lng: response.position.lng });
+      setDesCoords2({ lat: response.position.lat, lng: response.position.lng });
+      runMatrix(true);
     });
     //eslint-disable-next-line
   }, [socket.json]);
 
   const convert = () => {
-    Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
+    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     Geocode.fromAddress(originRef.current.value)
       .then((response) => {
         const { lat, lng } = response.results[0].geometry.location;
@@ -167,7 +176,7 @@ const Booking = (props) => {
   };
 
   const convertAutocomplete = (e, type) => {
-    Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
+    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     Geocode.fromAddress(e)
       .then((response) => {
         const { lat, lng } = response.results[0].geometry.location;
@@ -239,23 +248,9 @@ const Booking = (props) => {
   }, [dirResponse2]);
 
   const distanceMatrixCallback = (res) => {
-    runMatrix(false);
     const totalTime = res.rows[0].elements[0].duration.text;
     if (totalTime && runDirections2) setTime(totalTime);
   };
-
-  // const ambulanceMarker = (type) => {
-  //   let iconPath;
-  //   switch (type) {
-  //     case "als":
-  //       iconPath = "1";
-  //     case "bls":
-  //       iconPath = "2";
-  //     case "Non-Emergency":
-  //       iconPath = "3";
-  //   }
-  //   return iconPath;
-  // };
 
   const makeDriverRequest = () => {
     const userData = {
@@ -267,7 +262,6 @@ const Booking = (props) => {
       name: `${currentUser.fname} ${currentUser.lname}`,
     };
     setRunDirections1(false);
-    console.log(userData);
     socket.emit("ambulance_request", {
       ambulanceType,
       id: socket.id,
@@ -278,10 +272,14 @@ const Booking = (props) => {
   return (
     <div className="booking-container">
       <div className="booking-form-container">
+        <div className="logo-container">Artemis</div>
         {isBooking && (
           <>
             {" "}
-            <div className="booking-input-container">
+            <div
+              className="booking-input-container"
+              style={{ marginTop: "2rem" }}
+            >
               <StandaloneSearchBox
                 onPlacesChanged={() => {
                   setOgLoader(true);
@@ -389,7 +387,7 @@ const Booking = (props) => {
                   setCenter(destinationMarker.coords);
                 }}
               >
-                {showSavedDes ? "Hide" : "Show"} Saved Locations{" "}
+                {showSavedDes ? "Hide" : "Show"} Saved Locations
               </p>
               {showSavedDes && (
                 <Paper className={classes.savedLocations}>
@@ -457,12 +455,18 @@ const Booking = (props) => {
               destination={destinationRef}
             />
             <ToDoCarousel showCprDialog={showCprDialog} />
-            <Button color="primary" className={classes.cancelButton}>
-              Cancel Ride
-            </Button>
+            <div className={classes.cancelButton}>
+              <Button color="primary" onClick={() => history.push("/")}>
+                Cancel Ride
+              </Button>
+              <Button color="primary" onClick={() => showFeedback(true)}>
+                End Ride
+              </Button>
+            </div>
             <CPRDialog showDialog={cprDialog} setDialog={showCprDialog} />
           </>
         )}
+        <FeedbackDialog showDialog={feedback} setDialog={showFeedback} />
       </div>
       <GoogleMap
         zoom={15}
@@ -513,7 +517,7 @@ const Booking = (props) => {
         {matrix && (
           <DistanceMatrixService
             options={{
-              destinations: [{ lat: desCoords.lat, lng: desCoords.lng }],
+              destinations: [{ lat: desCoords2.lat, lng: desCoords2.lng }],
               origins: [{ lng: originCoords.lng, lat: originCoords.lat }],
               travelMode: "DRIVING",
             }}

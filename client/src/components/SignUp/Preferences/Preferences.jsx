@@ -61,7 +61,7 @@ const Preferences = ({ setStep, setNotification }) => {
   };
 
   const searchLocation = () => {
-    Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
+    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     Geocode.fromAddress(mapInput.current.value).then((response) => {
       const { lat, lng } = response.results[0].geometry.location;
       setCoords({ lat: lat, lng: lng });
@@ -114,7 +114,6 @@ const Preferences = ({ setStep, setNotification }) => {
   };
 
   const submitData = () => {
-    console.log("HERE");
     if (origins.length === 0 || destinations.length === 0) {
       setNotification({
         show: true,

@@ -3,6 +3,7 @@ import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { config } from "../../firebase";
 import firebase from "firebase";
+import Axios from "axios";
 
 import "./LandingContent.css";
 import backgroundImg from "./background.png";
@@ -32,7 +33,7 @@ const Landing = () => {
   const [phoneTrans, setPhoneTrans] = useState(true);
   const [otpTrans, setOTPTrans] = useState(true);
 
-  const phoneNumber = React.useRef(null);
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtpFromInput] = useState();
   const [otpReply, setOtpReply] = useState();
 
@@ -41,7 +42,7 @@ const Landing = () => {
   });
 
   const sendOTP = () => {
-    const number = "+91" + phoneNumber.current.value;
+    const number = "+91" + phoneNumber;
     const recaptcha = new firebase.auth.RecaptchaVerifier("recaptcha");
 
     app
@@ -59,10 +60,17 @@ const Landing = () => {
   const handleNotificationClose = () => setNotification({ show: false });
 
   useEffect(() => {
+    Axios.get("/getAmbulances")
+      .then((res) => console.log(JSON.parse(res.data)))
+      .catch((err) => console.log(err));
+  }, []);
+
+  useEffect(() => {
     if (otp)
       otpReply
         .confirm(otp)
         .then((res) => {
+          localStorage.setItem("art-auth", "true");
           setSearch(true);
           setOTP(false);
           setOTPTrans(false);
@@ -110,7 +118,7 @@ const Landing = () => {
             phoneTrans={phoneTrans}
             changePhoneTrans={setPhoneTrans}
             changeOTPTrans={setOTPTrans}
-            phoneNumber={phoneNumber}
+            setPhoneNumber={setPhoneNumber}
             sendOTP={sendOTP}
           />
         )}

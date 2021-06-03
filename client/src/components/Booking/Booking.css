@@ -23,3 +23,11 @@
   margin-top: 5px;
   cursor: pointer;
 }
+
+.logo-container {
+  font-size: 25px;
+  font-family: Sacramento;
+  color: red;
+  position: absolute;
+  top: 5px;
+}

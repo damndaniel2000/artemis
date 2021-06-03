@@ -53,7 +53,7 @@ const Search = (props) => {
   const handleSubmit = () => {
     showLoader(true);
     const origin = searchBox.current.value;
-    Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
+    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     Geocode.fromAddress(origin).then((response) => {
       const { lat, lng } = response.results[0].geometry.location;
       dispatch(setOrigin(lat, lng, origin));

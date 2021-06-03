@@ -131,7 +131,7 @@ const Personal = ({ setStep, setNotification }) => {
             <br />
             <Input
               type="number"
-              placeholder="18.5"
+              placeholder="18"
               defaultValue={data.age}
               id="age"
               required

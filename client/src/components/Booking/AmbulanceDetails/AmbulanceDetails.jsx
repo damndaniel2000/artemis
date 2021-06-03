@@ -4,6 +4,7 @@ import { Button, Input, InputAdornment, makeStyles } from "@material-ui/core";
 import "./AmbulanceDetails.css";
 
 import ambulanceImg from "../../../assets/booking/ambulance.svg";
+import CallIcon from "@material-ui/icons/Call";
 
 const useStyles = makeStyles({
   inputs: {
@@ -38,15 +39,18 @@ const AmbulanceDetails = ({
           <h3 className="ambulance-details-plate">
             {ambulanceData.plateNumber}
           </h3>
-          <h4 className="ambulance-details-type"> ALS </h4>
-          <br />
-          <Button
-            className="ambulance-details-button"
-            size="small"
-            color="primary"
-          >
-            More Details
-          </Button>
+          <h4 className="ambulance-details-type">
+            {" "}
+            {ambulanceData.type === "als" ? "ALS" : "BLS"}{" "}
+          </h4>
+          <div className="ambulance-phoneNumber">
+            <CallIcon fontSize="small" />
+            &nbsp;
+            <a className="links" href={`tel:${ambulanceData.phoneNumber}`}>
+              {" "}
+              {ambulanceData.phoneNumber}
+            </a>
+          </div>
         </div>
       </div>
       <div style={{ marginTop: 30 }}>
@@ -55,25 +59,13 @@ const AmbulanceDetails = ({
           label="Pick Up From"
           value="Lokmilan, Chandivali"
           // value={origin.current !== null ? origin.current.value : ""}
-          endAdornment={
-            <InputAdornment position="end">
-              <span className="ambulance-details-input-adorn">Change</span>
-            </InputAdornment>
-          }
         />
-        {console.log(destination, "THERE")}
         <Input
           className={classes.inputs}
           label="Destination"
           value="Hinduja Hospital, Mahim"
           // value={destination.current !== null ? destination.current.value : ""}
-          endAdornment={
-            <InputAdornment position="end">
-              <span className="ambulance-details-input-adorn">Change</span>
-            </InputAdornment>
-          }
         />
-        {console.log(ambulanceData)}
       </div>
     </>
   );

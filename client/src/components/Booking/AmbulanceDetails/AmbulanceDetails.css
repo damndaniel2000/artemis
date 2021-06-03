@@ -48,3 +48,12 @@
   color: #ff0800;
   cursor: pointer;
 }
+
+.ambulance-phoneNumber {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  font-family: rajdhani;
+  font-weight: 600;
+}

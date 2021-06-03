@@ -17,7 +17,7 @@ const Directions = (props) => {
   const handleOriginMarker = (e) => {
     const lat = e.latLng.lat();
     const lng = e.latLng.lng();
-    Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
+    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     Geocode.fromLatLng(lat, lng).then((res) => {
       const addr = res.results[0].formatted_address;
       props.setOriginRef(addr);
@@ -27,7 +27,7 @@ const Directions = (props) => {
   const handleDesMarker = (e) => {
     const lat = e.latLng.lat();
     const lng = e.latLng.lng();
-    Geocode.setApiKey("AIzaSyBLAI47V3CRFb-lwrRRpHLcVhVfx5uFebA");
+    Geocode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
     Geocode.fromLatLng(lat, lng).then((res) => {
       const addr = res.results[0].formatted_address;
       props.setDestinationRef(addr);

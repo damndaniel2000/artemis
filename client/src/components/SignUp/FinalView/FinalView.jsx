@@ -25,6 +25,8 @@ const FinalView = ({ setStep }) => {
     data.conditions.length > 0 &&
     data.medications.length > 0;
 
+  console.log(data);
+
   return (
     <div className="final-view">
       <div>
@@ -34,17 +36,17 @@ const FinalView = ({ setStep }) => {
             <div>
               <label>First Name </label>
               <br />
-              <p>{data.firstName}</p>
+              <p>{data.fname}</p>
             </div>
             <div>
               <label>Middle Name </label>
               <br />
-              <p> {data.middleName} </p>
+              <p> {data.mname} </p>
             </div>
             <div>
               <label>Last Name </label>
               <br />
-              <p> {data.lastName} </p>
+              <p> {data.lname} </p>
             </div>
           </div>
           <div className="signup-form-row">

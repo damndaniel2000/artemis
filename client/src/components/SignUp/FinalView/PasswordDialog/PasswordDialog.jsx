@@ -10,7 +10,8 @@ import {
   IconButton,
   InputAdornment,
 } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
@@ -35,9 +36,15 @@ const useStyles = makeStyles((theme) => ({
 const PasswordDialog = ({ open, setOpen }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const password1 = useRef("");
   const password2 = useRef("");
+
+  const email = useSelector(
+    (state) => state.signupReducer.emailId,
+    shallowEqual
+  );
 
   const [passwordIcon, setPasswordIcon] = useState(false);
 
@@ -49,7 +56,6 @@ const PasswordDialog = ({ open, setOpen }) => {
   };
 
   const handleSubmit = () => {
-    console.log(password1.current.value, password2.current.value);
     if (password1.current.value !== password2.current.value) {
       console.log("Password do not match");
       return;
@@ -57,6 +63,8 @@ const PasswordDialog = ({ open, setOpen }) => {
 
     dispatch(setPassword(password1.current.value));
     dispatch(makeAccount());
+    localStorage.setItem("art-auth", email);
+    history.push("/");
     handleClose();
   };
 

@@ -1,8 +1,19 @@
 import React, { useRef } from "react";
 import { useSpring, animated } from "react-spring";
-import { Grid, Paper, Typography, Input, Button } from "@material-ui/core";
+import {
+  Grid,
+  Paper,
+  Typography,
+  Input,
+  Button,
+  Snackbar,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Axios from "axios";
+import { Alert } from "@material-ui/lab";
+import { useDispatch } from "react-redux";
+
+import { saveUserData } from "../../../state/actions/user";
 
 import "./Login.css";
 
@@ -16,9 +27,16 @@ const useStyles = makeStyles({
 
 const Login = (props) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const email = useRef("");
   const password = useRef("");
+
+  const [notification, setNotification] = React.useState({
+    show: false,
+  });
+
+  const handleNotificationClose = () => setNotification({ show: false });
 
   const forwardTransition = useSpring({
     transform: "translateX(0%)",
@@ -31,19 +49,42 @@ const Login = (props) => {
 
   const transition = props.loginTrans ? forwardTransition : backwardTransition;
 
-  const handleLogin = () => {
+  const handleLogin = (e) => {
+    e.preventDefault();
     Axios.post("/api/users/login", {
       emailId: email.current.value,
       password: password.current.value,
     })
       .then((res) => {
         if (res.data === "OK") {
+          localStorage.setItem("art-auth", email.current.value);
+          Axios.post("/api/users/getUserInfo", { emailId: email.current.value })
+            .then((res) => dispatch(saveUserData(res.data)))
+            .catch((err) => console.log(err));
           props.showSearch(true);
           props.showLogin(false);
           props.changeLoginTrans(false);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        const error = { err };
+        if (error.err.response.status === 403) {
+          setNotification({
+            show: true,
+            text: "Incorrect Password",
+            severity: "error",
+          });
+          return;
+        }
+        if (error.err.response.status === 404) {
+          setNotification({
+            show: true,
+            text: "Email ID Not Registered",
+            severity: "error",
+          });
+          return;
+        }
+      });
   };
 
   return (
@@ -58,7 +99,7 @@ const Login = (props) => {
       >
         <Paper className="login-container">
           <Typography> Login </Typography>
-          <form action="" onClick={handleLogin}>
+          <form action="" onSubmit={handleLogin}>
             <Input
               type="email"
               color="secondary"
@@ -77,7 +118,7 @@ const Login = (props) => {
               required
             />
             <br />
-            <Button type="submit" color="primary" variant="contained">
+            <Button color="primary" type="submit" variant="contained">
               Login
             </Button>
           </form>
@@ -103,6 +144,21 @@ const Login = (props) => {
           &lt; Back
         </p>
       </Grid>
+
+      <Snackbar
+        open={notification.show}
+        autoHideDuration={5000}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleNotificationClose}
+          severity={notification.severity}
+          variant="filled"
+        >
+          {notification.text}
+        </Alert>
+      </Snackbar>
     </animated.div>
   );
 };

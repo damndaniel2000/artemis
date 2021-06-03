@@ -16,10 +16,14 @@ userRouter.route("/signup").post((req, res, next) => {
 userRouter.route("/login").post((req, res, next) => {
   Users.findOne({ emailId: req.body.emailId })
     .then((data) => {
+      if (data === null) {
+        res.sendStatus(404);
+        return;
+      }
       if (data.password === req.body.password) res.sendStatus(200);
       else res.sendStatus(403);
     })
-    .catch((err) => next(err));
+    .catch((err) => next(err, "HERE"));
 });
 
 userRouter.route("/getUserInfo").post((req, res, next) => {
