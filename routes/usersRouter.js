@@ -1,11 +1,18 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const auth = require("../middleware/auth");
 
 const Users = require("../models/usersModel");
 
 const userRouter = express.Router();
 
-userRouter.route("/signup").post((req, res, next) => {
+userRouter.route("/signup").post(async (req, res, next) => {
+  const data = req.body;
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  data.password = hashedPassword;
+
   Users.create(req.body)
     .then((response) => {
       res.json(response);

@@ -34,11 +34,9 @@ const ambulanceSchema = new Schema({
   position: {
     lat: {
       type: Number,
-      required: true,
     },
     lng: {
       type: Number,
-      required: true,
     },
   },
 });

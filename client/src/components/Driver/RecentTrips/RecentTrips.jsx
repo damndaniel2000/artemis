@@ -30,33 +30,13 @@ const useStyles = makeStyles({
 const RecentTrips = ({ ambulanceData }) => {
   const classes = useStyles();
 
-  const recent = [
-    {
-      dateTime: "18/08/20, 05:25",
-      destination: "Hiranandani Hospital",
-      img:
-        "https://maps.googleapis.com/maps/api/staticmap?center=Albany,+NY&zoom=13&scale=1&size=600x300&maptype=roadmap",
-    },
-    {
-      dateTime: "18/08/20, 05:25",
-      destination: "Hiranandani Hospital",
-      img:
-        "https://maps.googleapis.com/maps/api/staticmap?center=Albany,+NY&zoom=13&scale=1&size=600x300&maptype=roadmap",
-    },
-    {
-      dateTime: "18/08/20, 05:25",
-      destination: "Hiranandani Hospital",
-      img:
-        "https://maps.googleapis.com/maps/api/staticmap?center=Albany,+NY&zoom=13&scale=1&size=600x300&maptype=roadmap",
-    },
-  ];
-
   return (
     <>
       <Typography className={classes.title} variant="h4" color="primary">
         Recent Trips
       </Typography>
       {ambulanceData &&
+        ambulanceData.feedback &&
         ambulanceData.feedback.map((item) => (
           <Card className="recenttrips-card">
             <CardMedia
