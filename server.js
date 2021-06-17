@@ -5,6 +5,7 @@ const cors = require("cors");
 const http = require("http");
 const socketio = require("socket.io");
 const MongoClient = require("mongoose");
+require("dotenv").config();
 
 const ambulanceRouter = require("./routes/ambulanceRouter");
 const driverRouter = require("./routes/driverRouter");
