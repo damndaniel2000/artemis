@@ -20,17 +20,26 @@ userRouter.route("/signup").post(async (req, res, next) => {
     .catch((err) => next(err));
 });
 
-userRouter.route("/login").post((req, res, next) => {
-  Users.findOne({ emailId: req.body.emailId })
-    .then((data) => {
-      if (data === null) {
-        res.sendStatus(404);
-        return;
-      }
-      if (data.password === req.body.password) res.sendStatus(200);
-      else res.sendStatus(403);
-    })
-    .catch((err) => next(err, "HERE"));
+userRouter.route("/login").post(async (req, res, next) => {
+  try {
+    const { emailId, password } = req.body;
+
+    const user = await Ambulance.findOne({ emailId: emailId });
+    if (!user)
+      return res.status(400).json({
+        msg: "No account with this emailId has been registered.",
+      });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials." });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    res.json({
+      token,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 userRouter.route("/getUserInfo").post((req, res, next) => {
